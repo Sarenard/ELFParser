@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{Read, Cursor};
+use std::io::{Cursor, Read};
 
 use super::elfheader::Elf32Header;
 
@@ -19,7 +19,6 @@ impl Elf {
     }
 
     fn parse(rawbytes: Vec<u8>) -> std::io::Result<(Self)> {
-
         // parse header
         let mut cursor = Cursor::new(rawbytes);
 
@@ -31,7 +30,7 @@ impl Elf {
             rawbytes: cursor.into_inner(),
             header: header,
         };
-        
+
         Ok(elf)
     }
 }

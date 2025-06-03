@@ -1,11 +1,11 @@
 use std::io::{Cursor, Read};
 
-use byteorder::{ReadBytesExt, LittleEndian};
+use byteorder::{LittleEndian, ReadBytesExt};
 
 pub type ElfHalf = u16;
 pub type ElfWord = u32;
 pub type ElfAddr = u32; // ADDR
-pub type ElfOff = u32;  // OFFSET
+pub type ElfOff = u32; // OFFSET
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EType {
@@ -35,17 +35,17 @@ impl From<u16> for EType {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EMachine {
-    NONE,           // No machine
-    M32,            // AT&T WE 32100
-    SPARC,          // SPARC
-    INTEL386,       // Intel Architecture
-    M68K,           // Motorola 68000
-    M88K,           // Motorola 88000
-    INTEL860,       // Intel 80860
-    MIPS,           // MIPS RS3000 Big-Endian
-    MIPSRS4BE ,     // MIPS RS4000 Big-Endian
+    NONE,      // No machine
+    M32,       // AT&T WE 32100
+    SPARC,     // SPARC
+    INTEL386,  // Intel Architecture
+    M68K,      // Motorola 68000
+    M88K,      // Motorola 88000
+    INTEL860,  // Intel 80860
+    MIPS,      // MIPS RS3000 Big-Endian
+    MIPSRS4BE, // MIPS RS4000 Big-Endian
     // Reserved 11-16
-    Other(u16)
+    Other(u16),
 }
 
 impl From<u16> for EMachine {
@@ -61,16 +61,15 @@ impl From<u16> for EMachine {
             8 => EMachine::MIPS,
             10 => EMachine::MIPSRS4BE,
             // 11-16 réservés, on considère comme inconnus
-            other => EMachine::Other(other)
+            other => EMachine::Other(other),
         }
     }
 }
 
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EVersion {
-    NONE,              // invalid version
-    CURRENT(u32),       // current version
+    NONE,         // invalid version
+    CURRENT(u32), // current version
 }
 
 impl From<u32> for EVersion {
@@ -104,9 +103,8 @@ pub struct Elf32HeaderIdent {
 
 impl Elf32HeaderIdent {
     pub fn parse(cursor: &mut Cursor<Vec<u8>>) -> std::io::Result<(Self)> {
-
         let mut buf = [0u8; 16];
-        
+
         cursor.read_exact(&mut buf)?;
 
         assert!(buf[0] == 0x7f);
