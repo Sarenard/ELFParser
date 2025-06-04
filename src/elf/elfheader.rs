@@ -98,7 +98,7 @@ pub struct Elf32HeaderIdent {
     pub pad5: u8,
     pub pad6: u8,
     pub pad7: u8,
-    pub nident_size: u8,
+    pub pad8: u8,
 }
 
 impl Elf32HeaderIdent {
@@ -130,7 +130,7 @@ impl Elf32HeaderIdent {
             pad5: buf[12],
             pad6: buf[13],
             pad7: buf[14],
-            nident_size: buf[15],
+            pad8: buf[15],
         })
     }
 }
