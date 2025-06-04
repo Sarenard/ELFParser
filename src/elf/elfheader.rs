@@ -114,6 +114,11 @@ impl Elf32HeaderIdent {
         assert!([0, 1, 2].contains(&buf[4]));
         assert!([0, 1, 2].contains(&buf[5]));
 
+        // TODO : handle
+        // 0 means unknown data type
+        // 2 means big endian (who does big endian ??)
+        assert!(buf[5] == 1);
+
         Ok(Elf32HeaderIdent {
             mag0: buf[0],
             mag1: buf[1],
