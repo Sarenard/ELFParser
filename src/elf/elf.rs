@@ -36,26 +36,20 @@ impl Elf {
 
         // parse header
         let header = Elf32Header::parse(&elf, &mut cursor)?;
-        println!("header");
         elf.header = Some(header);
         // println!("{:?}", header);
 
         // parse section headers
-        let nb_sections = header.e_shnum;
-        println!("Il y a {} sections, traitons les", nb_sections);
         let sections = Elf32Shdr::parse(&elf, &mut cursor)?;
         elf.shdr = Some(sections);
         // for i in elf.clone().shdr.unwrap() {println!("{:?}", i);}
 
         // parse program headers
-        let nb_segments = header.e_phnum;
-        println!("Il y a {} programs", nb_segments);
         let progs = Elf32Phdr::parse(&elf, &mut cursor)?;
         elf.phdr = Some(progs);
-        for i in elf.clone().phdr.unwrap() {println!("{:?}", i);}
+        // for i in elf.clone().phdr.unwrap() {println!("{:?}", i);}
 
         // return the elf
-
         Ok(elf)
     }
 }

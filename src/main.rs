@@ -1,5 +1,4 @@
 use std::fs::File;
-use std::io::{self, Cursor, Read};
 
 pub mod elf;
 

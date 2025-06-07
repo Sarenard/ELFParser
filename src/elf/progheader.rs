@@ -9,6 +9,7 @@ pub type ElfAddr = u32; // ADDR
 pub type ElfOff = u32; // OFFSET
 
 #[derive(Debug, Clone, Copy)]
+#[allow(dead_code)]
 pub struct Elf32Phdr {
     p_type: ElfWord,
     p_offset: ElfOff,
