@@ -1,7 +1,8 @@
 use std::fs::File;
 use std::io::{Cursor, Read};
 
-use crate::elf::sections::Elf32Shdr;
+use crate::elf::progheader::Elf32Phdr;
+use crate::elf::secheader::Elf32Shdr;
 
 use super::elfheader::Elf32Header;
 
@@ -9,7 +10,8 @@ use super::elfheader::Elf32Header;
 pub struct Elf {
     pub rawbytes: Vec<u8>,
     pub header: Option<Elf32Header>,
-    pub sechdr: Option<Vec<Elf32Shdr>>,
+    pub shdr: Option<Vec<Elf32Shdr>>,
+    pub phdr: Option<Vec<Elf32Phdr>>,
 }
 
 impl Elf {
@@ -28,27 +30,29 @@ impl Elf {
         let mut elf = Elf {
             rawbytes,
             header: None,
-            sechdr: None,
+            shdr: None,
+            phdr: None,
         };
 
+        // parse header
         let header = Elf32Header::parse(&elf, &mut cursor)?;
-        println!("header :\n{:?}", header);
-
+        println!("header");
         elf.header = Some(header);
+        // println!("{:?}", header);
 
-        // parse sections
+        // parse section headers
         let nb_sections = header.e_shnum;
         println!("Il y a {} sections, traitons les", nb_sections);
         let sections = Elf32Shdr::parse(&elf, &mut cursor)?;
-        elf.sechdr = Some(sections);
+        elf.shdr = Some(sections);
+        // for i in elf.clone().shdr.unwrap() {println!("{:?}", i);}
 
-        for i in elf.clone().sechdr.unwrap() {
-            println!("{:?}", i);
-        }
-
-        // parse segments
-        // let nb_segments = header.e_phnum;
-        // println!("Il y a {} segments", nb_segments);
+        // parse program headers
+        let nb_segments = header.e_phnum;
+        println!("Il y a {} programs", nb_segments);
+        let progs = Elf32Phdr::parse(&elf, &mut cursor)?;
+        elf.phdr = Some(progs);
+        for i in elf.clone().phdr.unwrap() {println!("{:?}", i);}
 
         // return the elf
 
