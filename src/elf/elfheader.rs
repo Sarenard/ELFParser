@@ -2,6 +2,8 @@ use std::io::{Cursor, Read};
 
 use byteorder::{LittleEndian, ReadBytesExt};
 
+use super::Elf;
+
 pub type ElfHalf = u16;
 pub type ElfWord = u32;
 pub type ElfAddr = u32; // ADDR
@@ -9,13 +11,13 @@ pub type ElfOff = u32; // OFFSET
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EType {
-    NONE = 0,
-    REL = 1,
-    EXEC = 2,
-    DYN = 3,
-    CORE = 4,
-    LOPROC = 0xff00,
-    HIPROC = 0xffff,
+    NONE,
+    REL,
+    EXEC,
+    DYN,
+    CORE,
+    LOPROC,
+    HIPROC,
 }
 
 impl From<u16> for EType {
@@ -102,7 +104,7 @@ pub struct Elf32HeaderIdent {
 }
 
 impl Elf32HeaderIdent {
-    pub fn parse(cursor: &mut Cursor<Vec<u8>>) -> std::io::Result<(Self)> {
+    pub fn parse(cursor: &mut Cursor<Vec<u8>>) -> std::io::Result<Self> {
         let mut buf = [0u8; 16];
 
         cursor.read_exact(&mut buf)?;
@@ -116,8 +118,11 @@ impl Elf32HeaderIdent {
 
         // TODO : handle
         // 0 means unknown data type
-        // 2 means big endian (who does big endian ??)
+        // 2 means big endian (who does big endian wtf ??)
         assert!(buf[5] == 1);
+
+        // 32 or 64bit, for now we only allow 32
+        assert!(buf[4] == 1);
 
         Ok(Elf32HeaderIdent {
             mag0: buf[0],
@@ -159,15 +164,12 @@ pub struct Elf32Header {
 }
 
 impl Elf32Header {
-    pub fn parse(cursor: &mut Cursor<Vec<u8>>) -> std::io::Result<(Self)> {
+    pub fn parse(_elf: &Elf, cursor: &mut Cursor<Vec<u8>>) -> std::io::Result<Self> {
         // On commence par parser l'ident
         let e_ident = Elf32HeaderIdent::parse(cursor)?;
-        println!("{:?}", e_ident);
         // Puis on lit les autres champs (en little endian ici, adapter si besoin)
         let e_type_raw = cursor.read_u16::<LittleEndian>()?;
-        println!("e_type_raw {}", e_type_raw);
         let e_machine_raw = cursor.read_u16::<LittleEndian>()?;
-        println!("e_machine_raw {}", e_machine_raw);
         let e_version_raw = cursor.read_u32::<LittleEndian>()?;
         let e_entry = cursor.read_u32::<LittleEndian>()?;
         let e_phoff = cursor.read_u32::<LittleEndian>()?;
