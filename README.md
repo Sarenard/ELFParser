@@ -1,6 +1,8 @@
 # ELFParser
 An elf parser
 
+https://crates.io/crates/ELFParser
+
 Documentation :
 
 - https://refspecs.linuxfoundation.org/elf/elf.pdf

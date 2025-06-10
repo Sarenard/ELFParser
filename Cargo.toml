@@ -1,7 +1,13 @@
 [package]
 name = "ELFParser"
-version = "0.1.0"
+version = "1.0.1"
 edition = "2021"
+license = "MIT"
+description = "A basic elf parser"
+readme = "README.md"
+exclude = [
+    "tests/*",
+]
 
 [dependencies]
 byteorder = "1.4"
